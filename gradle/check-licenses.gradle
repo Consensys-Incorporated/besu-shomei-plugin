@@ -69,6 +69,14 @@ downloadLicenses {
     reportByLicenseType = true
     dependencyConfiguration = 'testCompile'
 
+    // Explicit destinations avoid the plugin's default lazy lookup of
+    // project.reporting.baseDir, which was removed in Gradle 9.
+    // (Configured via direct property access, not the report{} DSL method,
+    // since that method delegates to org.gradle.util.ConfigureUtil, also removed in Gradle 9.)
+    report.xml.destination = new File("$buildDir/reports/license")
+    report.html.destination = new File("$buildDir/reports/license")
+    report.json.destination = new File("$buildDir/reports/license")
+
     ext.apache = license('Apache License, Version 2.0', 'http://opensource.org/licenses/Apache-2.0')
     ext.mit = license('MIT License', 'http://www.opensource.org/licenses/mit-license.php')
     ext.bsd = license('BSD License', 'http://www.opensource.org/licenses/bsd-license.php')
