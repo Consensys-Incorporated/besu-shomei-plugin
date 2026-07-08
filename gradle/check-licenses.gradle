@@ -26,6 +26,8 @@
 // Some parts of this code comes from Zipkin/https://github.com/openzipkin/zipkin/pull/852
 // Zipkin itself is under Apache License.
 
+import groovy.xml.XmlParser
+
 /** spotless handles the adding of the headers */
 license {
     exclude("**/*")

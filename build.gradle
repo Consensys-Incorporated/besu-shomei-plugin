@@ -18,8 +18,8 @@ import groovy.transform.Memoized
 plugins {
     id 'com.diffplug.spotless' version '6.21.0'
     id 'com.github.hierynomus.license' version '0.16.1'
-    id 'io.spring.dependency-management' version '1.1.0'
-    id 'com.github.jk1.dependency-license-report' version '2.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.jk1.dependency-license-report' version '3.1.1'
     id 'net.ltgt.errorprone' version '3.0.1' apply false
     id 'net.consensys.besu-plugin-distribution' version '0.1.6'
 }
@@ -40,8 +40,8 @@ besuPlugin {
 }
 
 java {
-    sourceCompatibility = 21
-    targetCompatibility = 21
+    sourceCompatibility = 25
+    targetCompatibility = 25
 }
 
 defaultTasks 'build', 'checkLicenses', 'javadoc', 'plugin'
@@ -177,6 +177,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.2'
 }
 
 jar {

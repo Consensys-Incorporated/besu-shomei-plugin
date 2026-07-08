@@ -48,9 +48,9 @@ import org.hyperledger.besu.datatypes.StorageSlotKey;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
-import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.BonsaiAccount;
-import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.cache.CodeCache;
-import org.hyperledger.besu.ethereum.trie.pathbased.common.PathBasedValue;
+import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.account.BonsaiAccount;
+import org.hyperledger.besu.ethereum.trie.pathbased.common.code.PathBasedCodeCache;
+import org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.accumulator.PathBasedValue;
 import org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.accumulator.PathBasedWorldStateUpdateAccumulator;
 import org.hyperledger.besu.evm.worldstate.UpdateTrackingAccount;
 import org.hyperledger.besu.plugin.data.BlockHeader;
@@ -202,7 +202,7 @@ public class ZkTrieLogFactoryTests {
     // configure our test context
     testCtx.setCliOptions(testOpts).setBlockImportTraceProvider(mockTraceProvider);
 
-    final CodeCache codeCache = new CodeCache();
+    final PathBasedCodeCache codeCache = new PathBasedCodeCache();
 
     // mock an accumulator
     AccountValue account =
@@ -447,7 +447,7 @@ public class ZkTrieLogFactoryTests {
   @Test
   void assertDecorateAccountsHandlesUpdateTrackingAccount() {
     final Address address = Address.fromHexString("0xdeadbeef");
-    final CodeCache codeCache = new CodeCache();
+    final PathBasedCodeCache codeCache = new PathBasedCodeCache();
     final BonsaiAccount bonsaiAccount =
         new BonsaiAccount(
             null,
@@ -481,7 +481,7 @@ public class ZkTrieLogFactoryTests {
   @Test
   void assertDecorateAccountsHandlesNestedUpdateTrackingAccount() {
     final Address address = Address.fromHexString("0xc0ffee");
-    final CodeCache codeCache = new CodeCache();
+    final PathBasedCodeCache codeCache = new PathBasedCodeCache();
     final BonsaiAccount bonsaiAccount =
         new BonsaiAccount(
             null,
@@ -529,7 +529,7 @@ public class ZkTrieLogFactoryTests {
     testOpts.zkTraceComparisonMask = 15;
     testCtx.setCliOptions(testOpts).setBlockImportTraceProvider(mockTraceProvider);
 
-    final CodeCache codeCache = new CodeCache();
+    final PathBasedCodeCache codeCache = new PathBasedCodeCache();
 
     // wrappedAddress: getAccount() returns an UpdateTrackingAccount (engine_newPayload path)
     final BonsaiAccount wrappedBonsai =
