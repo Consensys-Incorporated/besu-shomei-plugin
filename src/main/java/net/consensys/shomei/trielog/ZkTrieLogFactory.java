@@ -142,8 +142,8 @@ public class ZkTrieLogFactory implements TrieLogFactory {
     return switch (account) {
       case null -> null;
       case PathBasedAccount pathBasedAccount -> pathBasedAccount;
-      case UpdateTrackingAccount<?> trackingAccount -> unwrapToPathBasedAccount(
-          trackingAccount.getWrappedAccount());
+      case UpdateTrackingAccount<?> trackingAccount ->
+          unwrapToPathBasedAccount(trackingAccount.getWrappedAccount());
       default -> null;
     };
   }
