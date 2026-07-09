@@ -44,8 +44,8 @@ import org.hyperledger.besu.ethereum.rlp.BytesValueRLPInput;
 import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
-import org.hyperledger.besu.ethereum.trie.pathbased.common.PathBasedAccount;
-import org.hyperledger.besu.ethereum.trie.pathbased.common.PathBasedValue;
+import org.hyperledger.besu.ethereum.trie.pathbased.common.account.PathBasedAccount;
+import org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.accumulator.PathBasedValue;
 import org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.accumulator.PathBasedWorldStateUpdateAccumulator;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.worldstate.UpdateTrackingAccount;
@@ -142,8 +142,8 @@ public class ZkTrieLogFactory implements TrieLogFactory {
     return switch (account) {
       case null -> null;
       case PathBasedAccount pathBasedAccount -> pathBasedAccount;
-      case UpdateTrackingAccount<?> trackingAccount -> unwrapToPathBasedAccount(
-          trackingAccount.getWrappedAccount());
+      case UpdateTrackingAccount<?> trackingAccount ->
+          unwrapToPathBasedAccount(trackingAccount.getWrappedAccount());
       default -> null;
     };
   }
