@@ -51,9 +51,11 @@ jobs:
           VERSION: ${{ steps.get_version.outputs.VERSION }}
           TAG_NAME: ${{ github.ref_name }}
         run: |
+          cp "./build/libs/besu-shomei-plugin-${VERSION}-test-support.jar" \
+             "./build/libs/besu-shomei-plugin-test-support-${VERSION}.jar"
           gh release create "$TAG_NAME" \
             --title "Release $TAG_NAME" \
             --notes "Draft release of version ${VERSION}." \
             --draft \
             "./build/distributions/besu-shomei-plugin-${VERSION}.zip" \
-            "./build/libs/besu-shomei-plugin-${VERSION}-test-support.jar#besu-shomei-plugin-test-support-${VERSION}.jar"
+            "./build/libs/besu-shomei-plugin-test-support-${VERSION}.jar"
