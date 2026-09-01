@@ -83,8 +83,8 @@ public class ZkTrieLogObserverTests {
     vertx
         .createHttpServer()
         .requestHandler(router)
-        .listen(
-            0,
+        .listen(0)
+        .onComplete(
             context.succeeding(
                 server -> {
                   rpcServicePort = server.actualPort();
