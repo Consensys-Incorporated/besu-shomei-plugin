@@ -77,7 +77,7 @@ public class GetShomeiTrieLogsTests {
         new MockJsonRpcHttpVerticle(
             List.of(new ShomeiGetTrieLogsByRange(ctx), new ShomeiGetTrieLog(ctx)));
     // start verticle
-    vertx.deployVerticle(verticle, testContext.succeedingThenComplete());
+    vertx.deployVerticle(verticle).onComplete(testContext.succeedingThenComplete());
     client = WebClient.create(vertx);
 
     when(trieLogService.getTrieLogProvider()).thenReturn(mockProvider);
@@ -86,7 +86,7 @@ public class GetShomeiTrieLogsTests {
   @AfterEach
   public void tearDown(Vertx vertx, VertxTestContext testContext) {
     // stop verticle
-    vertx.close(testContext.succeedingThenComplete());
+    vertx.close().onComplete(testContext.succeedingThenComplete());
   }
 
   @Test
@@ -188,8 +188,8 @@ public class GetShomeiTrieLogsTests {
       JsonObject requestJson, VertxTestContext testContext, Consumer<JsonObject> responseConsumer) {
     client
         .post(verticle.getServerPort(), "localhost", "/")
-        .sendJsonObject(
-            requestJson,
+        .sendJsonObject(requestJson)
+        .onComplete(
             response -> {
               if (response.succeeded()) {
                 JsonObject responseBody = response.result().bodyAsJsonObject();

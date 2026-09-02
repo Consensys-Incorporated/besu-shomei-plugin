@@ -57,10 +57,11 @@ public class MockJsonRpcHttpVerticle extends AbstractVerticle {
     router.post("/").handler(jsonRpcHandler());
     server
         .requestHandler(router)
-        .listen(
+        .listen()
+        .onComplete(
             result -> {
               if (result.succeeded()) {
-                serverPort = server.actualPort();
+                serverPort = result.result().actualPort();
                 startPromise.complete();
               } else {
                 startPromise.fail(result.cause());
@@ -70,7 +71,7 @@ public class MockJsonRpcHttpVerticle extends AbstractVerticle {
 
   private Handler<RoutingContext> jsonRpcHandler() {
     return ctx -> {
-      JsonObject requestBody = ctx.getBodyAsJson();
+      JsonObject requestBody = ctx.body().asJsonObject();
       String method = requestBody.getString("method");
       PluginRpcMethod rpcMethod = rpcMethods.get(method);
 
