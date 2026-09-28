@@ -44,9 +44,9 @@ import org.hyperledger.besu.ethereum.rlp.BytesValueRLPInput;
 import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
-import org.hyperledger.besu.ethereum.trie.pathbased.common.account.PathBasedAccount;
-import org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.accumulator.PathBasedValue;
-import org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.accumulator.PathBasedWorldStateUpdateAccumulator;
+import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.account.BonsaiAccount;
+import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.worldview.accumulator.BonsaiValue;
+import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.worldview.accumulator.PathBasedWorldStateUpdateAccumulator;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.worldstate.UpdateTrackingAccount;
 import org.hyperledger.besu.plugin.data.BlockHeader;
@@ -127,8 +127,8 @@ public class ZkTrieLogFactory implements TrieLogFactory {
             hubAccount,
             __ -> {
               final Account rawAccount = worldStateUpdateAccumulator.getAccount(hubAccount);
-              final PathBasedAccount account = unwrapToPathBasedAccount(rawAccount);
-              return new PathBasedValue<>(account, account, false);
+              final BonsaiAccount account = unwrapToPathBasedAccount(rawAccount);
+              return new BonsaiValue<>(account, account, false);
             });
       }
     } else {
@@ -138,10 +138,10 @@ public class ZkTrieLogFactory implements TrieLogFactory {
     return decorated;
   }
 
-  private static PathBasedAccount unwrapToPathBasedAccount(final Account account) {
+  private static BonsaiAccount unwrapToPathBasedAccount(final Account account) {
     return switch (account) {
       case null -> null;
-      case PathBasedAccount pathBasedAccount -> pathBasedAccount;
+      case BonsaiAccount pathBasedAccount -> pathBasedAccount;
       case UpdateTrackingAccount<?> trackingAccount ->
           unwrapToPathBasedAccount(trackingAccount.getWrappedAccount());
       default -> null;
@@ -203,7 +203,7 @@ public class ZkTrieLogFactory implements TrieLogFactory {
                     worldStateUpdateAccumulator
                         .getStorageValueByStorageSlotKey(seenStorage.getKey(), storageSlotKey)
                         .orElse(UInt256.ZERO);
-                return new PathBasedValue<>(storageValue, storageValue, false);
+                return new BonsaiValue<>(storageValue, storageValue, false);
               });
         }
         result.put(seenStorage.getKey(), storageForAddress);
