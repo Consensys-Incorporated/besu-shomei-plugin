@@ -49,9 +49,9 @@ import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.account.BonsaiAccount;
-import org.hyperledger.besu.ethereum.trie.pathbased.common.code.PathBasedCodeCache;
-import org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.accumulator.PathBasedValue;
-import org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.accumulator.PathBasedWorldStateUpdateAccumulator;
+import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.code.BonsaiCodeCache;
+import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.worldview.accumulator.BonsaiValue;
+import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.worldview.accumulator.PathBasedWorldStateUpdateAccumulator;
 import org.hyperledger.besu.evm.worldstate.UpdateTrackingAccount;
 import org.hyperledger.besu.plugin.data.BlockHeader;
 import org.hyperledger.besu.plugin.services.trielogs.TrieLog;
@@ -202,7 +202,7 @@ public class ZkTrieLogFactoryTests {
     // configure our test context
     testCtx.setCliOptions(testOpts).setBlockImportTraceProvider(mockTraceProvider);
 
-    final PathBasedCodeCache codeCache = new PathBasedCodeCache();
+    final BonsaiCodeCache codeCache = new BonsaiCodeCache();
 
     // mock an accumulator
     AccountValue account =
@@ -228,10 +228,10 @@ public class ZkTrieLogFactoryTests {
             false,
             codeCache);
 
-    var mockAccountMap = new HashMap<Address, PathBasedValue<AccountValue>>();
-    mockAccountMap.put(mockAddress2, new PathBasedValue<>(account2, account2, false));
+    var mockAccountMap = new HashMap<Address, BonsaiValue<AccountValue>>();
+    mockAccountMap.put(mockAddress2, new BonsaiValue<>(account2, account2, false));
 
-    var mockStorageMap = new HashMap<Address, Map<StorageSlotKey, PathBasedValue<UInt256>>>();
+    var mockStorageMap = new HashMap<Address, Map<StorageSlotKey, BonsaiValue<UInt256>>>();
     var mockAccumulator = mock(PathBasedWorldStateUpdateAccumulator.class, RETURNS_DEEP_STUBS);
     doAnswer(__ -> account).when(mockAccumulator).getAccount(eq(mockAddress));
     doAnswer(__ -> mockAccountMap).when(mockAccumulator).getAccountsToUpdate();
@@ -300,24 +300,23 @@ public class ZkTrieLogFactoryTests {
     testCtx.setCliOptions(testOpts).setBlockImportTraceProvider(mockTraceProvider);
 
     var mockAccumulator = mock(PathBasedWorldStateUpdateAccumulator.class, RETURNS_DEEP_STUBS);
-    var mockAccountMap = new HashMap<Address, PathBasedValue<AccountValue>>();
+    var mockAccountMap = new HashMap<Address, BonsaiValue<AccountValue>>();
     ZkAccountValue mockAccountValue = new ZkAccountValue(0, Wei.ZERO, Hash.EMPTY, Hash.EMPTY);
-    mockAccountMap.put(mockAddress, new PathBasedValue<>(mockAccountValue, mockAccountValue));
-    mockAccountMap.put(mockAddress2, new PathBasedValue<>(mockAccountValue, mockAccountValue));
-    var mockStorageMap = new HashMap<Address, Map<StorageSlotKey, PathBasedValue<UInt256>>>();
+    mockAccountMap.put(mockAddress, new BonsaiValue<>(mockAccountValue, mockAccountValue));
+    mockAccountMap.put(mockAddress2, new BonsaiValue<>(mockAccountValue, mockAccountValue));
+    var mockStorageMap = new HashMap<Address, Map<StorageSlotKey, BonsaiValue<UInt256>>>();
     mockStorageMap.put(
         mockAddress,
-        Map.of(new StorageSlotKey(UInt256.ZERO), new PathBasedValue<>(UInt256.ONE, UInt256.ONE)));
+        Map.of(new StorageSlotKey(UInt256.ZERO), new BonsaiValue<>(UInt256.ONE, UInt256.ONE)));
     mockStorageMap.put(
         mockAddress2,
         Map.of(
-            new StorageSlotKey(UInt256.ZERO), new PathBasedValue<>(UInt256.ZERO, UInt256.ZERO),
-            new StorageSlotKey(UInt256.ONE), new PathBasedValue<>(UInt256.ZERO, UInt256.ONE),
-            new StorageSlotKey(UInt256.MAX_VALUE),
-                new PathBasedValue<>(UInt256.ZERO, UInt256.ONE)));
+            new StorageSlotKey(UInt256.ZERO), new BonsaiValue<>(UInt256.ZERO, UInt256.ZERO),
+            new StorageSlotKey(UInt256.ONE), new BonsaiValue<>(UInt256.ZERO, UInt256.ONE),
+            new StorageSlotKey(UInt256.MAX_VALUE), new BonsaiValue<>(UInt256.ZERO, UInt256.ONE)));
     mockStorageMap.put(
         mockAddress3,
-        Map.of(new StorageSlotKey(UInt256.ZERO), new PathBasedValue<>(UInt256.ZERO, UInt256.ZERO)));
+        Map.of(new StorageSlotKey(UInt256.ZERO), new BonsaiValue<>(UInt256.ZERO, UInt256.ZERO)));
     doAnswer(__ -> mockAccountMap).when(mockAccumulator).getAccountsToUpdate();
     doAnswer(__ -> mockStorageMap).when(mockAccumulator).getStorageToUpdate();
 
@@ -447,7 +446,7 @@ public class ZkTrieLogFactoryTests {
   @Test
   void assertDecorateAccountsHandlesUpdateTrackingAccount() {
     final Address address = Address.fromHexString("0xdeadbeef");
-    final PathBasedCodeCache codeCache = new PathBasedCodeCache();
+    final BonsaiCodeCache codeCache = new BonsaiCodeCache();
     final BonsaiAccount bonsaiAccount =
         new BonsaiAccount(
             null,
@@ -481,7 +480,7 @@ public class ZkTrieLogFactoryTests {
   @Test
   void assertDecorateAccountsHandlesNestedUpdateTrackingAccount() {
     final Address address = Address.fromHexString("0xc0ffee");
-    final PathBasedCodeCache codeCache = new PathBasedCodeCache();
+    final BonsaiCodeCache codeCache = new BonsaiCodeCache();
     final BonsaiAccount bonsaiAccount =
         new BonsaiAccount(
             null,
@@ -529,7 +528,7 @@ public class ZkTrieLogFactoryTests {
     testOpts.zkTraceComparisonMask = 15;
     testCtx.setCliOptions(testOpts).setBlockImportTraceProvider(mockTraceProvider);
 
-    final PathBasedCodeCache codeCache = new PathBasedCodeCache();
+    final BonsaiCodeCache codeCache = new BonsaiCodeCache();
 
     // wrappedAddress: getAccount() returns an UpdateTrackingAccount (engine_newPayload path)
     final BonsaiAccount wrappedBonsai =
