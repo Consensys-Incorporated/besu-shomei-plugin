@@ -62,6 +62,7 @@ import org.hyperledger.besu.ethereum.core.BlockDataGenerator;
 import org.hyperledger.besu.ethereum.core.BlockchainSetupUtil;
 import org.hyperledger.besu.ethereum.core.Transaction;
 import org.hyperledger.besu.ethereum.core.TransactionReceipt;
+import org.hyperledger.besu.ethereum.mainnet.BlockExecutionContext;
 import org.hyperledger.besu.ethereum.mainnet.BlockProcessor;
 import org.hyperledger.besu.plugin.ServiceManager;
 import org.hyperledger.besu.plugin.data.BlockHeader;
@@ -372,7 +373,13 @@ public class ZkBlockImportTracerProviderTest {
             .getBlockProcessor();
 
     final BlockProcessingResult result =
-        processor.processBlock(spyProtocolContext, blockchain, worldState, block);
+        processor.processBlock(
+            BlockExecutionContext.builder()
+                .protocolContext(spyProtocolContext)
+                .worldState(worldState)
+                .block(block)
+                .blockAccessList(Optional.empty())
+                .build());
 
     // Assert transaction is present
     assertEquals(1, result.getReceipts().size());

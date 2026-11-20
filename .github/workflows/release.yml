@@ -12,6 +12,8 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    env:
+      GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=2
 
     steps:
       - name: Checkout code
@@ -30,31 +32,20 @@ jobs:
         with:
           cache-read-only: true
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Get the version
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
-
       - name: Build with Gradle
         env:
-          VERSION: ${{ steps.get_version.outputs.VERSION }}
+          VERSION: ${{ github.ref_name }}
         run: ./gradlew build -PreleaseVersion="$VERSION"
-
-      - name: Test with Gradle
-        run: ./gradlew test
 
       - name: Draft Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.get_version.outputs.VERSION }}
-          TAG_NAME: ${{ github.ref_name }}
+          VERSION: ${{ github.ref_name }}
         run: |
           cp "./build/libs/besu-shomei-plugin-${VERSION}-test-support.jar" \
              "./build/libs/besu-shomei-plugin-test-support-${VERSION}.jar"
-          gh release create "$TAG_NAME" \
-            --title "Release $TAG_NAME" \
+          gh release create "$VERSION" \
+            --title "Release $VERSION" \
             --notes "Draft release of version ${VERSION}." \
             --draft \
             "./build/distributions/besu-shomei-plugin-${VERSION}.zip" \

@@ -43,7 +43,7 @@ jobs:
           {
             "language": "java-kotlin",
             "build_mode": "manual",
-            "build_command": "./gradlew build",
+            "build_command": "./gradlew compileJava compileTestSupportJava",
             "version": "25",
             "distribution": "temurin"
           }

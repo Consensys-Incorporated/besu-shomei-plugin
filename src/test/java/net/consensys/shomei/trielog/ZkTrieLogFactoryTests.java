@@ -48,6 +48,7 @@ import org.hyperledger.besu.datatypes.StorageSlotKey;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
+import org.hyperledger.besu.ethereum.trie.common.MptStorageRootStrategy;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.account.BonsaiAccount;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.code.BonsaiCodeCache;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.worldview.accumulator.BonsaiValue;
@@ -212,7 +213,7 @@ public class ZkTrieLogFactoryTests {
             Hash.hash(mockAddress.getBytes()),
             0,
             Wei.ONE,
-            Hash.EMPTY_TRIE_HASH,
+            new MptStorageRootStrategy(Hash.EMPTY_TRIE_HASH),
             Hash.EMPTY,
             false,
             codeCache);
@@ -223,7 +224,7 @@ public class ZkTrieLogFactoryTests {
             Hash.hash(mockAddress2.getBytes()),
             0,
             Wei.ZERO,
-            Hash.EMPTY_TRIE_HASH,
+            new MptStorageRootStrategy(Hash.EMPTY_TRIE_HASH),
             Hash.ZERO,
             false,
             codeCache);
@@ -454,7 +455,7 @@ public class ZkTrieLogFactoryTests {
             Hash.hash(address.getBytes()),
             1,
             Wei.ONE,
-            Hash.EMPTY_TRIE_HASH,
+            new MptStorageRootStrategy(Hash.EMPTY_TRIE_HASH),
             Hash.EMPTY,
             false,
             codeCache);
@@ -488,7 +489,7 @@ public class ZkTrieLogFactoryTests {
             Hash.hash(address.getBytes()),
             0,
             Wei.ZERO,
-            Hash.EMPTY_TRIE_HASH,
+            new MptStorageRootStrategy(Hash.EMPTY_TRIE_HASH),
             Hash.EMPTY,
             false,
             codeCache);
@@ -538,7 +539,7 @@ public class ZkTrieLogFactoryTests {
             Hash.hash(wrappedAddress.getBytes()),
             2,
             Wei.fromEth(3),
-            Hash.EMPTY_TRIE_HASH,
+            new MptStorageRootStrategy(Hash.EMPTY_TRIE_HASH),
             Hash.EMPTY,
             false,
             codeCache);
@@ -553,7 +554,7 @@ public class ZkTrieLogFactoryTests {
             Hash.hash(directAddress.getBytes()),
             0,
             Wei.ONE,
-            Hash.EMPTY_TRIE_HASH,
+            new MptStorageRootStrategy(Hash.EMPTY_TRIE_HASH),
             Hash.EMPTY,
             false,
             codeCache);
